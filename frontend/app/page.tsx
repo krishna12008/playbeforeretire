@@ -1,89 +1,78 @@
 "use client"
 
-import { supabase } from "../lib/supabase"
-import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
-export default function Home() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [user, setUser] = useState<any>(null)
+const sports = [
+  { name: "Cricket", slug: "cricket", icon: "🏏" },
+  { name: "Football", slug: "football", icon: "⚽" },
+  { name: "Badminton", slug: "badminton", icon: "🏸" },
+  { name: "Volleyball", slug: "volleyball", icon: "🏐" },
+  { name: "Basketball", slug: "basketball", icon: "🏀" },
+  { name: "Hockey", slug: "hockey", icon: "🏑" },
+  { name: "Table Tennis", slug: "table-tennis", icon: "🏓" },
+  { name: "Chess", slug: "chess", icon: "♟️" },
+  { name: "Carom", slug: "carom", icon: "🎯" },
+  { name: "Swimming", slug: "swimming", icon: "🏊" },
+  { name: "Tennis", slug: "tennis", icon: "🎾" },
+  { name: "Pickleball", slug: "pickleball", icon: "🥎" },
+]
 
-  useEffect(() => {
-    checkUser()
-  }, [])
-
-  const checkUser = async () => {
-    const { data } = await supabase.auth.getUser()
-    setUser(data.user)
-  }
-
-  const handleSignup = async () => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      alert("Check your email for verification link 🚀")
-    }
-  }
-
-  const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      alert("Logged in successfully 🎉")
-      checkUser()
-    }
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-  }
-
-  if (user) {
-    return (
-      <div style={{ padding: "40px" }}>
-        <h1>Welcome 🎉</h1>
-        <p>{user.email}</p>
-        <button onClick={handleLogout}>Logout</button>
-      </div>
-    )
-  }
+export default function Landing() {
+  const router = useRouter()
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Play Before Retire</h1>
+    /* REMOVED pt-20 here */
+    <div className="relative min-h-screen bg-gradient-to-br from-black to-gray-900 text-white">
 
-      <input
-        type="email"
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ display: "block", marginBottom: "10px" }}
-      />
+      {/* TOP RIGHT NAV BUTTONS */}
+      <div className="absolute top-6 right-8 flex gap-4">
+        {/* Buttons go here */}
+      </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ display: "block", marginBottom: "10px" }}
-      />
+      {/* HERO SECTION - CHANGED py-20 to pt-10 pb-20 to reduce top gap */}
+      <div className="flex flex-col md:flex-row items-center justify-between px-12 pt-10 pb-20">
 
-      <button onClick={handleSignup} style={{ marginRight: "10px" }}>
-        Sign Up
-      </button>
+        {/* LEFT CONTENT */}
+        <div className="max-w-xl">
+          <h1 className="text-5xl font-bold mb-6 leading-tight">
+            Play Before Retire
+          </h1>
 
-      <button onClick={handleLogin}>
-        Login
-      </button>
+          <p className="text-lg text-gray-300 mb-4">
+            Thinking about life after 9 to 5?
+          </p>
+
+          <p className="text-lg text-gray-400 mb-8">
+            We build your team.
+            We arrange the ground.
+            We provide equipment.
+            We manage matches.
+            You just show up and play.
+          </p>
+
+          <button
+            onClick={() => router.push("/sports")}
+            className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
+          >
+            Get Started
+          </button>
+        </div>
+
+        {/* SPORTS GRID */}
+        <div className="grid grid-cols-3 gap-6 mt-12 md:mt-0">
+          {sports.map((sport) => (
+            <div
+              key={sport.slug}
+              onClick={() => router.push("/sports")}
+              className="bg-white text-black p-6 rounded-xl text-center font-semibold hover:scale-105 transition cursor-pointer"
+            >
+              <div className="text-3xl mb-2">{sport.icon}</div>
+              {sport.name}
+            </div>
+          ))}
+        </div>
+
+      </div>
     </div>
   )
 }
