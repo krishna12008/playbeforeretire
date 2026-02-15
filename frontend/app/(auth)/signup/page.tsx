@@ -8,49 +8,38 @@ export default function Signup() {
   const router = useRouter()
 
   const [form, setForm] = useState({
-    name: "",
-    mobile: "",
     email: "",
-    password: "",
-    district: "Lucknow",
-    turf: "Gomti Nagar",
+    password: ""
   })
 
-  const handleSignup = async () => {
-    const { data, error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-    })
+const handleSignup = async () => {
+  const { data, error } = await supabase.auth.signUp({
+    email: form.email,
+    password: form.password,
+  })
 
-    if (error) {
-      alert(error.message)
-      return
-    }
-
-    if (!data.user) {
-      alert("Signup failed")
-      return
-    }
-
-    router.push("/sports")
+  if (error) {
+    alert(error.message)
+    return
   }
+
+  if (!data.user) {
+    alert("Signup failed")
+    return
+  }
+
+  // 👇 IMPORTANT: redirect to complete profile
+  router.push("/login/complete-profile")
+}
+
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl w-96 shadow">
         <h1 className="text-2xl font-bold mb-6">Player Signup</h1>
 
-        <input
-          placeholder="Name"
-          className="border w-full p-2 mb-4"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-
-        <input
-          placeholder="Mobile No"
-          className="border w-full p-2 mb-4"
-          onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-        />
 
         <input
           placeholder="Email"
