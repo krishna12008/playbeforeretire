@@ -29,7 +29,7 @@ export default function SportsPage() {
       return
     }
 
-    router.push(`/register-match?type=${type}`)
+    router.push(`/register-match/${type}`)
   }
 
   return (
