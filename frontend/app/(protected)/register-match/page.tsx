@@ -27,7 +27,7 @@ export default function RegisterMatchPage() {
         body: JSON.stringify({
           userEmail: user?.email,
           match: "Cricket Single Match",
-          date: "21 Feb 2026 at 12:00 PM",
+          date: "28 Feb 2026 at 12:00 PM",
           venue: "Gomti Nagar, Lucknow",
           type: type === "team" ? "Team (₹2000)" : "Individual (₹200)",
         }),
@@ -73,7 +73,7 @@ export default function RegisterMatchPage() {
 
         <div className="text-gray-600 space-y-2">
           <p><strong>Match:</strong> Cricket Single Match</p>
-          <p><strong>Date:</strong> 21 Feb 2026 at 12:00 PM</p>
+          <p><strong>Date:</strong> 28 Feb 2026 at 12:00 PM</p>
           <p><strong>Venue:</strong> Gomti Nagar, Lucknow</p>
           <p>
             <strong>Registration Type:</strong>{" "}

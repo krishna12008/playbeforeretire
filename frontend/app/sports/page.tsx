@@ -70,7 +70,7 @@ export default function SportsPage() {
               {sport === "Cricket" ? (
                 <>
                   <div className="text-gray-600 text-sm mb-4 space-y-2">
-                    <p><strong>Date:</strong> 21 Feb 2026 at 12:00 PM</p>
+                    <p><strong>Date:</strong> 28 Feb 2026 at 12:00 PM</p>
                     <p><strong>Venue:</strong> Gomti Nagar, Lucknow</p>
                   </div>
 
