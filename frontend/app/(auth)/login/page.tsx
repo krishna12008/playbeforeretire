@@ -7,9 +7,10 @@ import ReCAPTCHA from "react-google-recaptcha"
 
 export default function LoginPage() {
   const router = useRouter()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [captchaToken, setCaptchaToken] = useState(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [message, setMessage] = useState("")
 
   const handleLogin = async () => {
@@ -57,10 +58,9 @@ export default function LoginPage() {
         {/* CAPTCHA */}
         <div className="mb-4 flex justify-center">
           <ReCAPTCHA
-          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-          onChange={(token) => setCaptchaToken(token)}
-        />
-
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+            onChange={(token) => setCaptchaToken(token)}
+          />
         </div>
 
         <button

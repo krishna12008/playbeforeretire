@@ -13,8 +13,7 @@ export default function Signup() {
     password: ""
   })
 
-  const [captchaToken, setCaptchaToken] = useState(null)
-
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const handleSignup = async () => {
     if (!captchaToken) {
       alert("Please verify captcha")
