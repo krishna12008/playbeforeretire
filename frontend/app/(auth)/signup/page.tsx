@@ -60,9 +60,10 @@ export default function Signup() {
         {/* CAPTCHA */}
         <div className="mb-6 flex justify-center">
           <ReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-            onChange={(token) => setCaptchaToken(token)}
-          />
+      sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      onChange={(token) => setCaptchaToken(token)}
+    />
+
         </div>
 
         <button

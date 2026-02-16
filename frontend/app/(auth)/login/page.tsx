@@ -57,9 +57,10 @@ export default function LoginPage() {
         {/* CAPTCHA */}
         <div className="mb-4 flex justify-center">
           <ReCAPTCHA
-            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-            onChange={(token) => setCaptchaToken(token)}
-          />
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+          onChange={(token) => setCaptchaToken(token)}
+        />
+
         </div>
 
         <button
@@ -76,4 +77,3 @@ export default function LoginPage() {
     </div>
   )
 }
-console.log(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)
