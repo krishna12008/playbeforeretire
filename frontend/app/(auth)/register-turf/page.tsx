@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { supabase } from "@/lib/supabase-client"
 import { useRouter } from "next/navigation"
 
-export default function CompleteProfile() {
+export default function RegisterTurf() {
   const router = useRouter()
 
   const [form, setForm] = useState({
@@ -17,37 +17,16 @@ export default function CompleteProfile() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getUser()
-
-      if (!data.user) {
-        router.push("/login")
-      }
-    }
-
-    checkUser()
-  }, [router])
-
   const handleSubmit = async () => {
     setLoading(true)
+    setMessage("")
 
-    const { data } = await supabase.auth.getUser()
-    const user = data.user
-
-    if (!user) {
-      setMessage("User not found")
-      setLoading(false)
-      return
-    }
-
-    const { error } = await supabase.from("profiles").insert({
-      id: user.id,
+    const { error } = await supabase.from("turfs").insert({
       name: form.name,
       mobile: form.mobile,
       district: form.district,
       state: form.state,
-      role: "individual",
+      role: "turf",
     })
 
     if (error) {
@@ -56,17 +35,22 @@ export default function CompleteProfile() {
       return
     }
 
-    router.push("/sports")
+    setMessage("Turf registered successfully!")
+    setLoading(false)
+
+    setTimeout(() => {
+      router.push("/sports")
+    }, 1500)
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl w-96 shadow space-y-4">
 
-        <h1 className="text-2xl font-bold">Complete Your Profile</h1>
+        <h1 className="text-2xl font-bold">Register Your Turf</h1>
 
         <input
-          placeholder="Full Name"
+          placeholder="Turf Name"
           className="border w-full p-2"
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -94,11 +78,11 @@ export default function CompleteProfile() {
           disabled={loading}
           className="bg-black text-white w-full p-2 rounded disabled:opacity-50"
         >
-          {loading ? "Saving..." : "Save Profile"}
+          {loading ? "Saving..." : "Register Turf"}
         </button>
 
         {message && (
-          <p className="text-red-600 text-sm">{message}</p>
+          <p className="text-green-600 text-sm">{message}</p>
         )}
       </div>
     </div>
