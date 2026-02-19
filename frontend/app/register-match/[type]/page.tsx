@@ -10,12 +10,14 @@ export default function RegisterMatchPage() {
 
   // ================= INDIVIDUAL =================
   const [individualName, setIndividualName] = useState("")
+  const [individualWhatsapp, setIndividualWhatsapp] = useState("")
   const [selectedTeam, setSelectedTeam] = useState("")
   const [playerType, setPlayerType] = useState("")
 
   // ================= TEAM =================
   const [teamName, setTeamName] = useState("")
   const [captainName, setCaptainName] = useState("")
+  const [teamWhatsapp, setTeamWhatsapp] = useState("")
   const [players, setPlayers] = useState<string[]>(Array(10).fill(""))
 
   const [showSuccess, setShowSuccess] = useState(false)
@@ -39,7 +41,7 @@ export default function RegisterMatchPage() {
   const handleIndividualConfirm = async () => {
     setErrorMessage("")
 
-    if (!individualName || !selectedTeam || !playerType) {
+    if (!individualName || !selectedTeam || !playerType || !individualWhatsapp) {
       setErrorMessage("Please fill all fields")
       return
     }
@@ -59,26 +61,27 @@ export default function RegisterMatchPage() {
           full_name: individualName,
           team_name: selectedTeam,
           player_type: playerType,
+          whatsapp_number: individualWhatsapp,
         },
       ])
-
-      await fetch("/api/booking", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    category: "individual",
-    userEmail: userData.user.email,
-    full_name: individualName,
-    team_name: selectedTeam,
-    player_type: playerType,
-  }),
-})
-
 
     if (error) {
       setErrorMessage("Error saving registration")
       return
     }
+
+    await fetch("/api/booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        category: "individual",
+        userEmail: userData.user.email,
+        full_name: individualName,
+        team_name: selectedTeam,
+        player_type: playerType,
+        whatsapp_number: individualWhatsapp,
+      }),
+    })
 
     setShowSuccess(true)
   }
@@ -87,13 +90,8 @@ export default function RegisterMatchPage() {
   const handleTeamConfirm = async () => {
     setErrorMessage("")
 
-    if (!teamName) {
-      setErrorMessage("Team Name is required")
-      return
-    }
-
-    if (!captainName) {
-      setErrorMessage("Captain Name is mandatory")
+    if (!teamName || !captainName || !teamWhatsapp) {
+      setErrorMessage("All fields are required")
       return
     }
 
@@ -101,7 +99,7 @@ export default function RegisterMatchPage() {
     const totalPlayers = 1 + filledPlayers.length
 
     if (totalPlayers !== 11) {
-      setErrorMessage("Exactly 11 players required (including Captain) (if not decided yet write skip)")
+      setErrorMessage("Exactly 11 players required (including Captain)")
       return
     }
 
@@ -122,26 +120,27 @@ export default function RegisterMatchPage() {
           team_name: teamName,
           captain_name: captainName,
           players: allPlayers,
+          whatsapp_number: teamWhatsapp,
         },
       ])
-
-      await fetch("/api/booking", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    category: "team",
-    userEmail: userData.user.email,
-    team_name: teamName,
-    captain_name: captainName,
-    players: allPlayers,
-  }),
-})
-
 
     if (error) {
       setErrorMessage("Error saving team registration")
       return
     }
+
+    await fetch("/api/booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        category: "team",
+        userEmail: userData.user.email,
+        team_name: teamName,
+        captain_name: captainName,
+        players: allPlayers,
+        whatsapp_number: teamWhatsapp,
+      }),
+    })
 
     setShowSuccess(true)
   }
@@ -151,9 +150,7 @@ export default function RegisterMatchPage() {
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6 sm:p-10">
 
         <h1 className="text-2xl sm:text-3xl font-bold text-center mb-8">
-          {type === "team"
-            ? "Team Registration"
-            : "Individual Registration"}
+          {type === "team" ? "Team Registration" : "Individual Registration"}
         </h1>
 
         {showSuccess ? (
@@ -162,8 +159,7 @@ export default function RegisterMatchPage() {
               ✅ Registration Confirmed!
             </div>
             <p className="text-gray-600">
-              Your registration is confirmed.
-              Someone from our team will connect you shortly.
+              Our team will contact you on WhatsApp shortly.
             </p>
           </div>
         ) : (
@@ -177,6 +173,14 @@ export default function RegisterMatchPage() {
                   placeholder="Full Name"
                   value={individualName}
                   onChange={(e) => setIndividualName(e.target.value)}
+                  className="w-full border rounded-lg px-4 py-2"
+                />
+
+                <input
+                  type="tel"
+                  placeholder="WhatsApp Number"
+                  value={individualWhatsapp}
+                  onChange={(e) => setIndividualWhatsapp(e.target.value)}
                   className="w-full border rounded-lg px-4 py-2"
                 />
 
@@ -232,9 +236,17 @@ export default function RegisterMatchPage() {
 
                 <input
                   type="text"
-                  placeholder="Captain Name (Mandatory)"
+                  placeholder="Captain Name"
                   value={captainName}
                   onChange={(e) => setCaptainName(e.target.value)}
+                  className="w-full border rounded-lg px-4 py-2"
+                />
+
+                <input
+                  type="tel"
+                  placeholder="Captain WhatsApp Number"
+                  value={teamWhatsapp}
+                  onChange={(e) => setTeamWhatsapp(e.target.value)}
                   className="w-full border rounded-lg px-4 py-2"
                 />
 
