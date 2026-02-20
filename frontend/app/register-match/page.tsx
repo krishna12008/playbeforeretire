@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css"
 import { supabase } from "@/lib/supabase-client"
 import ReCAPTCHA from "react-google-recaptcha"
 
+
 // SSR safe leaflet components
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -44,7 +45,7 @@ export default function RegisterMatchPage() {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [success, setSuccess] = useState(false)
-
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   // Load flag icon only on client
   useEffect(() => {
     import("leaflet").then((L) => {
@@ -151,25 +152,56 @@ export default function RegisterMatchPage() {
   // Submit
   const handleSubmit = async () => {
 
-    if (!fullName || !email || !whatsapp || !selectedSport || !selectedTurf) {
-      setErrorMessage("Please fill all required fields.")
-      return
-    }
+  if (!captchaToken) {
+    setErrorMessage("Please complete the reCAPTCHA verification.")
+    return
+  }
 
-    if (registerType === "Team" && !yourName) {
-      setErrorMessage("Please enter your name.")
-      return
-    }
+  if (!fullName || !email || !whatsapp || !selectedSport || !selectedTurf) {
+    setErrorMessage("Please fill all required fields.")
+    return
+  }
 
-    if (selectedSport === "Cricket" && !playerType) {
-      setErrorMessage("Please select player type.")
-      return
-    }
+  if (registerType === "Team" && !yourName) {
+    setErrorMessage("Please enter your team name.")
+    return
+  }
 
-   const { error } = await supabase
-  .from("registrations")
-  .insert([
-    {
+  if (selectedSport === "Cricket" && !playerType) {
+    setErrorMessage("Please select player type.")
+    return
+  }
+
+  setLoading(true)
+  setErrorMessage("")
+
+  const { error } = await supabase
+    .from("registrations")
+    .insert([
+      {
+        register_type: registerType,
+        your_name: registerType === "Team" ? yourName : null,
+        full_name: fullName,
+        email,
+        whatsapp_number: whatsapp,
+        sport: selectedSport,
+        player_type: selectedSport === "Cricket" ? playerType : null,
+        turf_name: selectedTurf,
+      },
+    ])
+
+  if (error) {
+    setErrorMessage("Error saving registration.")
+    setLoading(false)
+    return
+  }
+
+  await fetch("/api/send-registration-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       register_type: registerType,
       your_name: registerType === "Team" ? yourName : null,
       full_name: fullName,
@@ -178,34 +210,12 @@ export default function RegisterMatchPage() {
       sport: selectedSport,
       player_type: selectedSport === "Cricket" ? playerType : null,
       turf_name: selectedTurf,
-    },
-  ])
+    }),
+  })
 
-if (error) {
-  setErrorMessage("Error saving registration.")
-  return
+  setSuccess(true)
+  setLoading(false)
 }
-
-// 🔔 SEND EMAIL AFTER SUCCESSFUL INSERT
-await fetch("/api/send-registration-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          register_type: registerType,
-          your_name: registerType === "Team" ? yourName : null,
-          full_name: fullName,
-          email,
-          whatsapp_number: whatsapp,
-          sport: selectedSport,
-          player_type: selectedSport === "Cricket" ? playerType : null,
-          turf_name: selectedTurf,
-        }),
-      })
-
-setSuccess(true)
-  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center px-4 py-10">
@@ -355,7 +365,7 @@ setSuccess(true)
                     <div className="mb-4 flex justify-center">
                       <ReCAPTCHA
                         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-                        onChange={(token) => setCaptchaToken(token)}
+                        onChange={(token: string | null) => setCaptchaToken(token)}
                       />
                     </div>
 
