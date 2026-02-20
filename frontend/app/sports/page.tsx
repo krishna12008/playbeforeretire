@@ -1,7 +1,6 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase-client"
 
 const sportsList = [
   "Cricket",
@@ -18,18 +17,24 @@ const sportsList = [
   "Pickleball",
 ]
 
+// Active Sports
+const activeSports = [
+  "Cricket",
+  "Football",
+  "Pickleball",
+  "Swimming",
+  "Volleyball",
+  "Basketball",
+  "Badminton",
+]
+
 export default function SportsPage() {
+
   const router = useRouter()
 
-  const handleRegister = async (type: "individual" | "team") => {
-    const { data } = await supabase.auth.getSession()
-
-    if (!data.session) {
-      router.push("/login")
-      return
-    }
-
-    router.push(`/register-match/${type}`)
+  const handleRegister = () => {
+    // Directly go to register page
+    router.push("/register-match")
   }
 
   return (
@@ -58,39 +63,22 @@ export default function SportsPage() {
 
                 <span
                   className={`px-3 py-1 text-xs rounded-full ${
-                    sport === "Cricket"
+                    activeSports.includes(sport)
                       ? "bg-green-100 text-green-700"
                       : "bg-yellow-100 text-yellow-700"
                   }`}
                 >
-                  {sport === "Cricket" ? "Active" : "Upcoming"}
+                  {activeSports.includes(sport) ? "Active" : "Upcoming"}
                 </span>
               </div>
 
-              {sport === "Cricket" ? (
-                <>
-                  <div className="text-gray-600 text-sm mb-4 space-y-2">
-                    <p><strong>Date:</strong> 28 Feb 2026 at 12:00 PM</p>
-                    <p><strong>Venue:</strong> Gomti Nagar, Lucknow</p>
-                  </div>
-
-                  {/* Responsive Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <button
-                      onClick={() => handleRegister("individual")}
-                      className="bg-black text-white w-full sm:w-auto px-4 py-2 rounded-lg text-sm hover:bg-gray-800 transition"
-                    >
-                      Register Individual ₹200
-                    </button>
-
-                    <button
-                      onClick={() => handleRegister("team")}
-                      className="bg-black text-white w-full sm:w-auto px-4 py-2 rounded-lg text-sm hover:bg-gray-800 transition"
-                    >
-                      Register Team ₹2000
-                    </button>
-                  </div>
-                </>
+              {activeSports.includes(sport) ? (
+                <button
+                  onClick={handleRegister}
+                  className="bg-black text-white w-full sm:w-auto px-4 py-2 rounded-lg text-sm hover:bg-gray-800 transition"
+                >
+                  Registration as an Individual or Team
+                </button>
               ) : (
                 <div className="text-gray-500 text-sm">
                   Registration opening soon.
