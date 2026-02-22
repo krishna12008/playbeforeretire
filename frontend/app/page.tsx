@@ -29,11 +29,19 @@ export default function Landing() {
         {/* LEFT CONTENT */}
         <div className="max-w-xl text-center lg:text-left">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-            Play Before Retire
-          </h1>
+              No Signup! No Login! Whatsapp me "Hi Match" on{" "}
+              <a
+                href="https://wa.me/919580106639?text=Hi%20Match"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-400 underline hover:text-green-300"
+              >
+                9580106639
+              </a>
+            </h1>
 
           <p className="text-base sm:text-lg text-gray-300 mb-4">
-            Thinking about life after 9 to 5?
+            Trust me, this will be the best two hours of your entire week.
           </p>
 
           <p className="text-sm sm:text-lg text-gray-400 mb-8 leading-relaxed">
